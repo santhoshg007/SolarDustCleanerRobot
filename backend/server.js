@@ -153,13 +153,49 @@ function commandHandler(commandName) {
       return res.status(400).json({ status: "failure", reason: "Missing fields" });
     }
 
-    const payload = {
-      type: 'command',
-      command: commandName,
-      deviceUUID,
-      timestamp,
-      params: params || {}
+    let payload = {
+      "status": "",
+      "direction": "",
+      "main-speed": 0,
+      "brush-speed": 0,
+      "timestamp": timestamp,
+      "params": {}
     };
+
+    switch (commandName) {
+      case "startCleaning":
+        payload["status"] = "START";
+        payload["direction"] = params.direction || "FWD";
+        payload["main-speed"] = params.mainSpeed || 50;
+        payload["brush-speed"] = params.brushSpeed || 50;
+        break;
+      case "stopCleaning":
+        payload["status"] = "STOP";
+        break;
+      case "move":
+        payload["status"] = "START";
+	payload["direction"] = params.direction || "FWD";
+        payload["direction"] = params.direction || "";
+        payload["main-speed"] = params.speed || 50;
+        break;
+      case "startDirectionalCleaning":
+        payload["status"] = "START";
+        payload["direction"] = params.direction || "FWD";
+        payload["direction"] = params.direction || "";
+        payload["main-speed"] = params.mainSpeed || 50;
+        payload["brush-speed"] = params.brushSpeed || 50;
+        break;
+      case "setMotorSpeed":
+        payload["status"] = "START";
+        payload["direction"] = params.direction || "FWD";
+        payload["main-speed"] = params.mainSpeed || 50;
+        payload["brush-speed"] = params.brushSpeed || 50;
+        break;
+      default:
+        return res.status(400).json({ status: "failure", reason: "Invalid command" });
+    }
+
+    console.log(`Payload before publishing:`, JSON.stringify(payload, null, 2));
 
     const ack = await publishAndWaitAck(deviceUUID, payload);
     return res.json({ requestStatus: ack.status, ack });
