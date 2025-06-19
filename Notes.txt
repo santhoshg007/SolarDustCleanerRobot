@@ -1,0 +1,286 @@
+Account
+	1.1 Account Signup
+		1.1.1 Request:
+			JSON
+			{
+			  "method": "POST",
+			  "url": "/account/signup",
+			  "body": {
+			    "email": "",
+			    "password": ""
+			  }
+			}
+		1.1.2 Response:
+	1.2 Login (local)
+		1.2.1 Request:
+			JSON
+			{
+			  "method": "POST",
+			  "url": "/account/login/local",
+			  "body": {
+			    "email": "",
+			    "password": ""
+			  }
+			}
+		1.2.2 Response:
+	1.3 Logout
+		1.3.1 Request:
+			JSON
+			{
+			  "method": "POST",
+			  "url": "/account/logout",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		1.3.2 Response:
+	1.4 Get account details
+		1.4.1 Request:
+			JSON
+			{
+			  "method": "GET",
+			  "url": "/account",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		1.4.2 Response:
+	1.5 Change password (local)
+		1.5.1 Request:
+			JSON
+			{
+			  "method": "PATCH",
+			  "url": "/account/change-password",
+			  "headers": {
+			    "x-api-key": ""
+			  },
+			  "body": {
+			    "new-password": ""
+			  }
+			}
+		1.5.2 Response:
+Client
+	2.1 Create new client
+		2.1.1 Request:
+			JSON
+			{
+			  "method": "POST",
+			  "url": "/client",
+			  "headers": {
+			    "x-api-key": ""
+			  },
+			  "body": {
+			    "name": ""
+			  }
+			}
+		2.1.2 Response:
+	2.2 Get all clients
+		2.2.1 Request:
+			JSON
+			{
+			  "method": "GET",
+			  "url": "/client",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		2.2.2 Response:
+	2.3 Get client by ID
+		2.3.1 Request:
+			JSON
+			{
+			  "method": "GET",
+			  "url": "/client/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		2.3.2 Response:
+	2.4 Update client
+		2.4.1 Request:
+			JSON
+			{
+			  "method": "PATCH",
+			  "url": "/client/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  },
+			  "body": {
+			    "name": ""
+			  }
+			}
+		2.4.2 Response:
+	2.5 Delete client
+		2.5.1 Request:
+			JSON
+			{
+			  "method": "DELETE",
+			  "url": "/client/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		2.5.2 Response:
+Location
+	3.1 Create new location
+		3.1.1 Request:
+			JSON
+			{
+			  "method": "POST",
+			  "url": "/location",
+			  "headers": {
+			    "x-api-key": ""
+			  },
+			  "body": {
+			    "name": "",
+			    "client": "",
+			    "address": {
+			      "line-1": "",
+			      "line-2": "",
+			      "line-3": "",
+			      "city": "",
+			      "state": "",
+			      "zip": "",
+			      "country": ""
+			    }
+			  }
+			}
+		3.1.2 Response:
+	3.2 Get all locations
+		3.2.1 Request:
+			JSON
+			{
+			  "method": "GET",
+			  "url": "/location",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		3.2.2 Response:
+	3.3 Get location by ID
+		3.3.1 Request:
+			JSON
+			{
+			  "method": "GET",
+			  "url": "/location/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		3.3.2 Response:
+	3.4 Update location
+		3.4.1 Request:
+			JSON
+			{
+			  "method": "PATCH",
+			  "url": "/location/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  },
+			  "body": {
+			    "name": ""
+			  }
+			}
+		3.4.2 Response:
+	3.5 Delete location
+		3.5.1 Request:
+			JSON
+			{
+			  "method": "DELETE",
+			  "url": "/location/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		3.5.2 Response:
+Solar Panel Robot
+	4.1 Create new robot
+		4.1.1 Request:
+			JSON
+			{
+			  "method": "POST",
+			  "url": "/solar-robot",
+			  "headers": {
+			    "x-api-key": ""
+			  },
+			  "body": {
+			    "name": "",
+			    "mac-address": "",
+			    "model": "",
+			    "location": "",
+			    "comm-port": "",
+			    "status": "",
+			    "installation-date": ""
+			  }
+			}
+		4.1.2 Response:
+	4.2 Get all robots
+		4.2.1 Request:
+			JSON
+			{
+			  "method": "GET",
+			  "url": "/solar-robot",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		4.2.2 Response:
+	4.3 Get robot by ID
+		4.3.1 Request:
+			JSON
+			{
+			  "method": "GET",
+			  "url": "/solar-robot/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		4.3.2 Response:
+	4.4 Update robot
+		4.4.1 Request:
+			JSON
+			{
+			  "method": "PATCH",
+			  "url": "/solar-robot/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  },
+			  "body": {
+			    "name": "",
+			    "model": "",
+			    "client": "",
+			    "location": "",
+			    "comm-port": "",
+			    "status": "",
+			    "installation-date": ""
+			  }
+			}
+		4.4.2 Response:
+	4.5 Configure robot
+		4.5.1 Request:
+			JSON
+			{
+			  "method": "PATCH",
+			  "url": "/solar-robot/command/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  },
+			  "body": {
+			    "status": "",
+			    "direction": "",
+			    "main-speed": 0,
+			    "brush-speed": 0
+			  }
+			}
+		4.5.2 Response:
+	4.6 Delete robot
+		4.6.1 Request:
+			JSON
+			{
+			  "method": "DELETE",
+			  "url": "/solar-robot/:id",
+			  "headers": {
+			    "x-api-key": ""
+			  }
+			}
+		4.6.2 Response:
