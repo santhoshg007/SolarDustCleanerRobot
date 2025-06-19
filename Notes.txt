@@ -1,5 +1,7 @@
+========
 Account
-	1.1 Account Signup
+========
+	1.1 Account Signup [{{root-url}}/account/signup]
 		1.1.1 Request:
 			JSON
 			{
@@ -11,7 +13,15 @@ Account
 			  }
 			}
 		1.1.2 Response:
-	1.2 Login (local)
+			{
+			    "error": "Account with that email already registered"
+			}
+			
+			{
+			    "message": "New account created successfully",
+			    "email": "santhoshavvan.gps@gmail.com"
+			}			
+	1.2 Login (local) [{{root-url}}/account/login/local]
 		1.2.1 Request:
 			JSON
 			{
@@ -19,11 +29,18 @@ Account
 			  "url": "/account/login/local",
 			  "body": {
 			    "email": "",
-			    "password": ""
+			    "password": ""{{root-url}}/solar-robot/:id
 			  }
 			}
 		1.2.2 Response:
-	1.3 Logout
+				{
+				    "message": "Successfully logged in",
+				    "account": "68525085dd4c20b41d31e64e",
+				    "email": "mail2mysanthosh@gmail.com",
+				    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NTI1MDg1ZGQ0YzIwYjQxZDMxZTY0ZSIsImlhdCI6MTc1MDMzNTI0NSwiZXhwIjoxNzUwMzU2ODQ1fQ.3fJhyWdrZha3_0_j3Tm8OdyCmgyFLMod_vtirPF0eAk"
+				}
+					
+	1.3 Logout [{{root-url}}/account/logout]
 		1.3.1 Request:
 			JSON
 			{
@@ -34,7 +51,11 @@ Account
 			  }
 			}
 		1.3.2 Response:
-	1.4 Get account details
+			{
+			    "message": "Successfully logged out"
+			}
+			
+	1.4 Get account details [{{root-url}}/account]
 		1.4.1 Request:
 			JSON
 			{
@@ -45,7 +66,12 @@ Account
 			  }
 			}
 		1.4.2 Response:
-	1.5 Change password (local)
+			{
+			    "account": "68525085dd4c20b41d31e64e",
+			    "email": "mail2mysanthosh@gmail.com"
+			}
+			
+	1.5 Change password (local) [{{root-url}}/account/change-password]
 		1.5.1 Request:
 			JSON
 			{
@@ -59,9 +85,12 @@ Account
 			  }
 			}
 		1.5.2 Response:
+		
+========	
 Client
+=======
 	2.1 Create new client
-		2.1.1 Request:
+		2.1.1 Request: [{{root-url}}/client]
 			JSON
 			{
 			  "method": "POST",
@@ -74,7 +103,8 @@ Client
 			  }
 			}
 		2.1.2 Response:
-	2.2 Get all clients
+		
+	2.2 Get all clients [{{root-url}}/client]
 		2.2.1 Request:
 			JSON
 			{
@@ -85,7 +115,23 @@ Client
 			  }
 			}
 		2.2.2 Response:
-	2.3 Get client by ID
+			{
+			    "number-of-clients-found": 2,
+			    "clients": [
+				{
+				    "_id": "684528117aed51314c37b693",
+				    "name": "Accessteq Systems Pvt Ltd.",
+				    "__v": 0
+				},
+				{
+				    "_id": "6852540fdd4c20b41d31e6c8",
+				    "name": "santhosh",
+				    "__v": 0
+				}
+			    ]
+			}
+				
+	2.3 Get client by ID [{{root-url}}/client/:id]
 		2.3.1 Request:
 			JSON
 			{
@@ -96,7 +142,15 @@ Client
 			  }
 			}
 		2.3.2 Response:
-	2.4 Update client
+			{
+			    "client": {
+				"_id": "684528117aed51314c37b693",
+				"name": "Accessteq Systems Pvt Ltd.",
+				"__v": 0
+			    }
+			}
+			
+	2.4 Update client [{{root-url}}/client/:id]
 		2.4.1 Request:
 			JSON
 			{
@@ -110,7 +164,16 @@ Client
 			  }
 			}
 		2.4.2 Response:
-	2.5 Delete client
+			{
+			    "message": "Client updated",
+			    "client": {
+				"_id": "684528117aed51314c37b693",
+				"name": "santhosh1",
+				"__v": 0
+			    }
+			}
+				
+	2.5 Delete client :  [{{root-url}}/client/:id]
 		2.5.1 Request:
 			JSON
 			{
@@ -121,7 +184,10 @@ Client
 			  }
 			}
 		2.5.2 Response:
-Location
+		
+=========		
+Location :
+=========
 	3.1 Create new location
 		3.1.1 Request:
 			JSON
@@ -145,7 +211,40 @@ Location
 			    }
 			  }
 			}
+			ex :
+				{
+				    "name": "Test Site 1",
+				    "client": "684528117aed51314c37b693",
+				    "address": {
+					"line-1": "Door #",
+					"line-2": "Street Name",
+					"line-3": "Locality",
+					"city": "City",
+					"state": "State",
+					"zip": "100001",
+					"country": "IN"
+				    }
+				}
+		
 		3.1.2 Response:
+			{
+			    "message": "New location registered",
+			    "location": {
+				"address": {
+				    "line-1": "Door #",
+				    "line-2": "Street Name",
+				    "line-3": "Locality",
+				    "city": "City",
+				    "state": "State",
+				    "zip": "100001",
+				    "country": "IN"
+				},
+				"_id": "6854055add4c20b41d32368c",
+				"name": "Test Site 1",
+				"client": "684528117aed51314c37b693",
+				"__v": 0
+			    }
+			}		
 	3.2 Get all locations
 		3.2.1 Request:
 			JSON
@@ -157,7 +256,27 @@ Location
 			  }
 			}
 		3.2.2 Response:
-	3.3 Get location by ID
+			{
+			    "number-of-locations-found": 1,
+			    "locations": [
+				{
+				    "address": {
+					"line-1": "Door #",
+					"line-2": "Street Name",
+					"line-3": "Locality",
+					"city": "City",
+					"state": "State",
+					"zip": "100001",
+					"country": "IN"
+				    },
+				    "_id": "6847ed8a0ec0475e79523b77",
+				    "name": "Test Site 1",
+				    "client": "684528117aed51314c37b693",
+				    "__v": 0
+				}
+			    ]
+			}		
+	3.3 Get location by ID [{{root-url}}/location]
 		3.3.1 Request:
 			JSON
 			{
@@ -168,7 +287,26 @@ Location
 			  }
 			}
 		3.3.2 Response:
-	3.4 Update location
+
+			{
+			    "location": {
+				"address": {
+				    "line-1": "Door #",
+				    "line-2": "Street Name",
+				    "line-3": "Locality",
+				    "city": "City",
+				    "state": "State",
+				    "zip": "100001",
+				    "country": "IN"
+				},
+				"_id": "6847ed8a0ec0475e79523b77",
+				"name": "Test Site 1",
+				"client": "684528117aed51314c37b693",
+				"__v": 0
+			    }
+			}			
+					
+	3.4 Update location [{{root-url}}/location/:id]
 		3.4.1 Request:
 			JSON
 			{
@@ -182,6 +320,24 @@ Location
 			  }
 			}
 		3.4.2 Response:
+			{
+			    "message": "Location updated",
+			    "location": {
+				"address": {
+				    "line-1": "Door #",
+				    "line-2": "Street Name",
+				    "line-3": "Locality",
+				    "city": "City",
+				    "state": "State",
+				    "zip": "100001",
+				    "country": "IN"
+				},
+				"_id": "6847ed8a0ec0475e79523b77",
+				"name": "santhosh",
+				"client": "684528117aed51314c37b693",
+				"__v": 0
+			    }
+			}		
 	3.5 Delete location
 		3.5.1 Request:
 			JSON
@@ -193,8 +349,29 @@ Location
 			  }
 			}
 		3.5.2 Response:
+			{
+			    "message": "Location removed",
+			    "location": {
+				"address": {
+				    "line-1": "Door #",
+				    "line-2": "Street Name",
+				    "line-3": "Locality",
+				    "city": "City",
+				    "state": "State",
+				    "zip": "100001",
+				    "country": "IN"
+				},
+				"_id": "6847ed8a0ec0475e79523b77",
+				"name": "santhosh",
+				"client": "684528117aed51314c37b693",
+				"__v": 0
+			    }
+			}		
+		
+==================		
 Solar Panel Robot
-	4.1 Create new robot
+==================
+	4.1 Create new robot [{{root-url}}/solar-robot]
 		4.1.1 Request:
 			JSON
 			{
@@ -213,8 +390,39 @@ Solar Panel Robot
 			    "installation-date": ""
 			  }
 			}
+			ex :
+				{
+				    "name": "MC",
+				    "mac-address": "34B7DA5D40D0",
+				    "model": "1",
+				    "location": "6847ed8a0ec0475e79523b77",
+				    "comm-port": "COMM-01",
+				    "status": "OPERATIONAL",
+				    "installation-date": "2025-06-12T04:33:53.129Z"
+				}
 		4.1.2 Response:
-	4.2 Get all robots
+		
+			{
+			    "message": "New solar robot registered",
+			    "solar-robot": {
+				"_id": "6854036edd4c20b41d3234db",
+				"name": "MC",
+				"mac-address": "34B7DA5D40D0",
+				"model": "1",
+				"location": "6847ed8a0ec0475e79523b77",
+				"comm-port": "COMM-01",
+				"status": "OPERATIONAL",
+				"installation-date": "2025-06-12T04:33:53.129Z",
+				"created-by": "68525085dd4c20b41d31e64e",
+				"created": "2025-06-19T12:32:46.827Z",
+				"updated-by": "68525085dd4c20b41d31e64e",
+				"updated": "2025-06-19T12:32:46.828Z",
+				"__v": 0
+			    }
+}		
+		
+	4.2 Get all robots : [{{root-url}}/solar-robot]
+	
 		4.2.1 Request:
 			JSON
 			{
@@ -225,7 +433,86 @@ Solar Panel Robot
 			  }
 			}
 		4.2.2 Response:
-	4.3 Get robot by ID
+			{
+			    "number-of-controllers-found": 3,
+			    "solar-robots": [
+				{
+				    "user-setting": {
+					"status": "STOP",
+					"direction": "REV",
+					"main-speed": 50,
+					"brush-speed": 50
+				    },
+				    "reported-operation": {
+					"status": "STOP",
+					"direction": "REV",
+					"main-speed": 30,
+					"brush-speed": 10
+				    },
+				    "_id": "6847eef3a008168dd2152aee",
+				    "name": "DEMO 01",
+				    "mac-address": "34B7DA5D40E0",
+				    "model": "TST MK1",
+				    "location": "6847ed8a0ec0475e79523b77",
+				    "comm-port": "COMM-01",
+				    "status": "OPERATIONAL",
+				    "created-by": "684527b07aed51314c37b68b",
+				    "created": "2025-06-10T08:38:11.586Z",
+				    "updated-by": "684527b07aed51314c37b68b",
+				    "updated": "2025-06-19T10:32:13.163Z",
+				    "__v": 0
+				},
+				{
+				    "user-setting": {
+					"status": "START",
+					"direction": "FWD",
+					"main-speed": 50,
+					"brush-speed": 50
+				    },
+				    "_id": "684a58b1dd4c20b41d319195",
+				    "name": "DEMO 02",
+				    "mac-address": "34B7DA5D40D0",
+				    "model": "TEST MK1",
+				    "location": "6847ed8a0ec0475e79523b77",
+				    "comm-port": "COMM-01",
+				    "status": "OPERATIONAL",
+				    "installation-date": "2025-06-12T00:00:00.000Z",
+				    "created-by": "684527b07aed51314c37b68b",
+				    "created": "2025-06-12T04:33:53.129Z",
+				    "updated-by": "684527b07aed51314c37b68b",
+				    "updated": "2025-06-18T06:02:17.860Z",
+				    "__v": 0
+				},
+				{
+				    "user-setting": {
+					"status": "STOP",
+					"direction": "FWD",
+					"main-speed": 10,
+					"brush-speed": 10
+				    },
+				    "reported-operation": {
+					"status": "STOP",
+					"direction": "FWD",
+					"main-speed": 0,
+					"brush-speed": 75
+				    },
+				    "_id": "684a5c53dd4c20b41d319405",
+				    "name": "ALRM 01",
+				    "mac-address": "34B7DA5D40E4",
+				    "model": "GPALR V1.5",
+				    "location": "6847ed8a0ec0475e79523b77",
+				    "comm-port": "COMM-01",
+				    "status": "OPERATIONAL",
+				    "installation-date": "2025-06-12T00:00:00.000Z",
+				    "created-by": "684527b07aed51314c37b68b",
+				    "created": "2025-06-12T04:49:23.418Z",
+				    "updated-by": "684527b07aed51314c37b68b",
+				    "updated": "2025-06-19T12:20:44.660Z",
+				    "__v": 0
+				}
+			    ]
+			}		
+	4.3 Get robot by ID : [{{root-url}}/solar-robot/:id]
 		4.3.1 Request:
 			JSON
 			{
@@ -236,7 +523,31 @@ Solar Panel Robot
 			  }
 			}
 		4.3.2 Response:
-	4.4 Update robot
+			{
+			    "solar-robot": {
+				"user-setting": {
+				    "status": "START",
+				    "direction": "FWD",
+				    "main-speed": 50,
+				    "brush-speed": 50
+				},
+				"_id": "684a58b1dd4c20b41d319195",
+				"name": "DEMO 02",
+				"mac-address": "34B7DA5D40D0",
+				"model": "TEST MK1",
+				"location": "6847ed8a0ec0475e79523b77",
+				"comm-port": "COMM-01",
+				"status": "OPERATIONAL",
+				"installation-date": "2025-06-12T00:00:00.000Z",
+				"created-by": "684527b07aed51314c37b68b",
+				"created": "2025-06-12T04:33:53.129Z",
+				"updated-by": "684527b07aed51314c37b68b",
+				"updated": "2025-06-18T06:02:17.860Z",
+				"__v": 0
+			    }
+			}
+					
+	4.4 Update robot [{{root-url}}/solar-robot/:id]
 		4.4.1 Request:
 			JSON
 			{
@@ -256,7 +567,8 @@ Solar Panel Robot
 			  }
 			}
 		4.4.2 Response:
-	4.5 Configure robot
+		
+	4.5 Configure robot [{{root-url}}/solar-robot/command/:id]
 		4.5.1 Request:
 			JSON
 			{
@@ -273,7 +585,36 @@ Solar Panel Robot
 			  }
 			}
 		4.5.2 Response:
-	4.6 Delete robot
+			{
+			    "message": "Configuration command sent",
+			    "solar-robot": {
+				"user-setting": {
+				    "status": "STOP",
+				    "direction": "REV",
+				    "main-speed": 50,
+				    "brush-speed": 50
+				},
+				"reported-operation": {
+				    "status": "STOP",
+				    "direction": "REV",
+				    "main-speed": 30,
+				    "brush-speed": 10
+				},
+				"_id": "6847eef3a008168dd2152aee",
+				"name": "DEMO 01",
+				"mac-address": "34B7DA5D40E0",
+				"model": "TST MK1",
+				"location": "6847ed8a0ec0475e79523b77",
+				"comm-port": "COMM-01",
+				"status": "OPERATIONAL",
+				"created-by": "684527b07aed51314c37b68b",
+				"created": "2025-06-10T08:38:11.586Z",
+				"updated-by": "684527b07aed51314c37b68b",
+				"updated": "2025-06-19T10:32:13.163Z",
+				"__v": 0
+			    }
+			}		
+	4.6 Delete robot [{{root-url}}/solar-robot/:id]
 		4.6.1 Request:
 			JSON
 			{
@@ -284,3 +625,21 @@ Solar Panel Robot
 			  }
 			}
 		4.6.2 Response:
+			{
+			    "message": "Solar robot removed",
+			    "solar-robot": {
+				"_id": "6854036edd4c20b41d3234db",
+				"name": "MC",
+				"mac-address": "34B7DA5D40D0",
+				"model": "1",
+				"location": "6847ed8a0ec0475e79523b77",
+				"comm-port": "COMM-01",
+				"status": "OPERATIONAL",
+				"installation-date": "2025-06-12T04:33:53.129Z",
+				"created-by": "68525085dd4c20b41d31e64e",
+				"created": "2025-06-19T12:32:46.827Z",
+				"updated-by": "68525085dd4c20b41d31e64e",
+				"updated": "2025-06-19T12:32:46.828Z",
+				"__v": 0
+			    }
+			}		
