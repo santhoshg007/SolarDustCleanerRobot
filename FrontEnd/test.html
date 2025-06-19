@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Robot Command Sender</title>
+  <style>
+    #output {
+      margin-top: 20px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      border: 1px solid #ccc;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+  <h2>Robot Command Test Page</h2>
+
+  <button onclick="sendAuth()">Send Auth</button>
+  <button onclick="sendCommand('startCleaning')">Start Cleaning</button>
+  <button onclick="sendCommand('stopCleaning')">Stop Cleaning</button>
+  <button onclick="sendMove('forward')">Move Forward</button>
+  <button onclick="sendMove('reverse')">Move Reverse</button>
+  <button onclick="sendDirection('left')">Start Left Clean</button>
+  <button onclick="sendDirection('right')">Start Right Clean</button>
+  <button onclick="setMotor('drive', 60)">Drive Speed 60%</button>
+  <button onclick="setMotor('brush', 75)">Brush Speed 75%</button>
+  <button onclick="scheduleClean()">Schedule Cleaning</button>
+
+  <div id="output"></div>
+
+  <script>
+    const baseUrl = 'https://172.17.43.36:8443';
+    const deviceUUID = '1001';
+
+    function showOutput(endpoint, data) {
+      const output = document.getElementById('output');
+      output.innerText = `[${endpoint}]
+` + JSON.stringify(data, null, 2);
+    }
+
+    function showLoading(endpoint) {
+      const output = document.getElementById('output');
+      output.innerText = `[${endpoint}] Loading...`;
+    }
+
+    async function post(endpoint, data) {
+      showLoading(endpoint);
+      try {
+        const res = await fetch(`${baseUrl}/${endpoint}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`HTTP ${res.status}: ${errorText}`);
+        }
+
+        const json = await res.json();
+        console.log(`[${endpoint}]`, json);
+        showOutput(endpoint, json);
+      } catch (err) {
+        console.error(`Error [${endpoint}]`, err);
+        showOutput(endpoint, { error: err.message });
+      }
+    }
+
+    function sendAuth() {
+      const payload = {
+        deviceUUID,
+        firmwareVersion: "v1.0.2",
+        imei: "8675309",
+        timestamp: Date.now()
+      };
+      post("auth", payload);
+    }
+
+    function sendCommand(cmd) {
+      const payload = {
+        command: cmd,
+        deviceUUID,
+        timestamp: Date.now(),
+        params: {}
+      };
+      post(cmd, payload);
+    }
+
+    function sendMove(direction) {
+      const payload = {
+        command: "move",
+        deviceUUID,
+        timestamp: Date.now(),
+        params: { direction }
+      };
+      post("move", payload);
+    }
+
+    function sendDirection(startDirection) {
+      const payload = {
+        command: "startDirectionalCleaning",
+        deviceUUID,
+        timestamp: Date.now(),
+        params: { startDirection }
+      };
+      post("startDirectionalCleaning", payload);
+    }
+
+    function setMotor(motor, speedPercent) {
+      const payload = {
+        command: "setMotorSpeed",
+        deviceUUID,
+        timestamp: Date.now(),
+        params: { motor, speedPercent }
+      };
+      post("setMotorSpeed", payload);
+    }
+
+    function scheduleClean() {
+      const payload = {
+        command: "scheduleCleaning",
+        deviceUUID,
+        timestamp: Date.now(),
+        params: {
+          triggerMode: "once",
+          startTime: Date.now() + 60000,
+          intervalMinutes: 120,
+          durationMinutes: 30
+        }
+      };
+      post("scheduleCleaning", payload);
+    }
+  </script>
+</body>
+</html>
