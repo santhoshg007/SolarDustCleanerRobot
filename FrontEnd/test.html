@@ -32,7 +32,8 @@
   <div id="output"></div>
 
   <script>
-    const baseUrl = 'https://172.17.43.36:8443';
+    //const baseUrl = `${window.location.protocol}://${window.location.hostname}:8443`;
+    const baseUrl = `https://${window.location.hostname}:8443`;
     const deviceUUID = '1001';
 
     function showOutput(endpoint, data) {
