@@ -16,7 +16,14 @@ const newId = randomUUID();
 const SECRET_KEY = 'c90069dbacfedb7a94644184d53550c8dafcdd1785a139ea69c29f00c4680659162ac630cc4b55a06b7a2f802972b4aa801e16f05a77de9d49c6c98299a010f8'; // Use .env in production
 
 // MQTT Client
-const mqttClient = mqtt.connect('mqtt://localhost:1883');
+//const mqttClient = mqtt.connect('mqtt://localhost:1883');
+
+// MQTT Client
+const mqttClient = mqtt.connect('mqtt://localhost:1883', {
+  username: 'konguess',
+  password: 'konguess#$007'
+});
+
 
 mqttClient.on('connect', () => {
   console.log('✅ Connected to MQTT broker');
@@ -26,8 +33,8 @@ mqttClient.on('error', (err) => {
 });
 
 // SSL Certs
-const privateKey = fs.readFileSync('./CERT/key.pem', 'utf8');
-const certificate = fs.readFileSync('./CERT/cert.pem', 'utf8');
+const privateKey = fs.readFileSync('../CERT/key.pem', 'utf8');
+const certificate = fs.readFileSync('../CERT/cert.pem', 'utf8');
 const credentials = { key: privateKey, cert: certificate };
 
 // Middleware
@@ -36,10 +43,11 @@ app.use(bodyParser.json());
 
 // MySQL setup
 const DB_NAME = 'robot_om_db';
+
 const db = mysql.createConnection({
   host: 'localhost',
-  user: 'root',
-  password: 'dbs',
+  user: 'dustcleanrobot',
+  password: 'dustcleanrobot#$07',
   multipleStatements: true
 });
 
