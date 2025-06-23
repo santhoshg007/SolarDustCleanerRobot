@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Robot Auth Test</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 20px;
+      background: var(--bg, #fff);
+      color: var(--text, #000);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    input,
+    button {
+      margin: 5px 0;
+      padding: 5px;
+      width: 300px;
+      background: var(--input-bg, #fff);
+      color: var(--text, #000);
+      border: 1px solid #ccc;
+    }
+
+    button:hover {
+      background: #007bff;
+      color: white;
+    }
+
+    #strength {
+      height: 10px;
+      background: lightgray;
+      width: 300px;
+    }
+
+    #strengthMeter {
+      height: 10px;
+      width: 0;
+      background: green;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-top: 10px;
+      background: var(--input-bg, #fff);
+      color: var(--text, #000);
+    }
+
+    .countdown,
+    .userInfo {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    hr {
+      margin: 20px 0;
+    }
+
+    .dark {
+      --bg: #121212;
+      --text: #f0f0f0;
+      --input-bg: #1e1e1e;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      padding: 10px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 16px;
+    }
+
+    #toast.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 3s;
+    }
+
+    @keyframes fadein {
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+
+      to {
+        bottom: 30px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeout {
+      from {
+        bottom: 30px;
+        opacity: 1;
+      }
+
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <button onclick="toggleTheme()">🌗 Toggle Theme</button>
+
+    <h2>Signup</h2>
+    <input id="signupEmail" placeholder="Email" type="email" /><br />
+    <input id="signupPass" placeholder="Password" type="password" oninput="checkStrength(this.value)" /><br />
+    <div id="strength">
+      <div id="strengthMeter"></div>
+    </div>
+    <button onclick="signup()">Sign Up</button>
+
+    <hr />
+
+    <h2>Login</h2>
+    <input id="loginEmail" placeholder="Email" type="email" /><br />
+    <input id="loginPass" placeholder="Password" type="password" /><br />
+    <button onclick="login()">Login</button>
+
+    <div class="userInfo" id="userInfo"></div>
+
+    <hr />
+
+    <h2>Protected Request (/solar-robot/:id)</h2>
+    <input id="robotId" placeholder="Robot ID (e.g. 101)" /><br />
+    <button onclick="accessProtected()">Access Protected Route</button>
+
+    <hr />
+
+    <h2>Get Account Details</h2>
+    <button onclick="getAccountDetails()">🔎 Get Account</button>
+
+    <hr />
+
+    <h2>Change Password</h2>
+    <input id="newPassword" type="password" placeholder="New Password" /><br />
+    <button onclick="changePassword()">🔒 Change Password</button>
+
+    <hr />
+
+    <h2>Create New Client</h2>
+    <input id="clientName" type="text" placeholder="Client Name" /><br />
+    <button onclick="createClient()">➕ Create Client</button>
+    <hr />
+
+    <h2>Get All Clients</h2>
+    <button onclick="getAllClients()">📋 Get All Clients</button>
+
+    <hr />
+
+    <h2>Get Client by ID</h2>
+    <input id="getClientId" placeholder="Client ID (e.g. 1)" /><br />
+    <button onclick="getClientById()">🔍 Get Client</button>
+
+    <hr />
+
+    <h2>Update Client by ID</h2>
+    <input id="updateClientId" placeholder="Client ID (e.g. 1)" /><br />
+    <input id="updateClientName" placeholder="New Client Name" /><br />
+    <button onclick="updateClient()">✏️ Update Client</button>
+
+    <hr />
+
+    <h2>Delete Client by ID</h2>
+    <input id="deleteClientId" placeholder="Client ID (e.g. 1)" /><br />
+    <button onclick="deleteClient()">🗑️ Delete Client</button>
+
+    <hr />
+
+    <h2>Create New Location</h2>
+    <input id="locationName" placeholder="Location Name" /><br />
+    <input id="locationClient" placeholder="Client ID (24-digit)" /><br />
+    <input id="addr1" placeholder="Address Line 1" /><br />
+    <input id="addr2" placeholder="Address Line 2" /><br />
+    <input id="addr3" placeholder="Address Line 3" /><br />
+    <input id="addrCity" placeholder="City" /><br />
+    <input id="addrState" placeholder="State" /><br />
+    <input id="addrZip" placeholder="ZIP Code" /><br />
+    <input id="addrCountry" placeholder="Country (e.g. IN)" /><br />
+    <button onclick="createLocation()">➕ Create Location</button>
+
+    <hr />
+
+    <h2>Get All Locations</h2>
+    <button onclick="getAllLocations()">📋 Get All Locations</button>
+
+    <hr />
+
+    <h2>Get Location by ID</h2>
+    <input id="locId" placeholder="Location ID (24-digit)" /><br />
+    <button onclick="getLocationById()">🔍 Get Location</button>
+
+    <hr />
+    <h2>Update Location</h2>
+    <input id="locIdUpdate" placeholder="Location ID (24-digit)" /><br />
+    <input id="locNameUpdate" placeholder="New Location Name" /><br />
+    <input id="locClientIdUpdate" placeholder="Client ID (24-digit)" /><br />
+    <input id="line1Update" placeholder="Address Line 1" /><br />
+    <input id="line2Update" placeholder="Address Line 2" /><br />
+    <input id="line3Update" placeholder="Address Line 3" /><br />
+    <input id="cityUpdate" placeholder="City" /><br />
+    <input id="stateUpdate" placeholder="State" /><br />
+    <input id="zipUpdate" placeholder="ZIP" /><br />
+    <input id="countryUpdate" placeholder="Country" /><br />
+    <button onclick="updateLocation()">✏️ Update Location</button>
+    <hr />
+
+    <h2>Delete Location</h2>
+    <input id="locIdDelete" placeholder="Location ID (24-digit)" /><br />
+    <button onclick="deleteLocation()">🗑️ Delete Location</button>
+
+    <hr />
+
+    <h2>Send Robot Command</h2>
+    <input id="commandRobotId" placeholder="Robot ID (24-digit)" /><br />
+    <select id="commandName">
+      <option value="startCleaning">Start Cleaning</option>
+      <option value="stopCleaning">Stop Cleaning</option>
+      <option value="move">Move</option>
+      <option value="startDirectionalCleaning">Start Directional Cleaning</option>
+      <option value="setMotorSpeed">Set Motor Speed</option>
+    </select><br />
+    <input id="cmdDirection" placeholder="Direction (FWD/REV)" /><br />
+    <input id="cmdMainSpeed" type="number" placeholder="Main Speed" /><br />
+    <input id="cmdBrushSpeed" type="number" placeholder="Brush Speed" /><br />
+    <button onclick="sendRobotCommand()">🚀 Send Command</button>
+
+    <hr />
+
+  <h2>Create New Robot</h2>
+  <input id="robotName" placeholder="Name" /><br/>
+  <input id="robotMac" placeholder="MAC Address" /><br/>
+  <input id="robotModel" placeholder="Model" /><br/>
+  <input id="robotLocation" placeholder="Location ID" /><br/>
+  <input id="robotCommPort" placeholder="Comm Port" /><br/>
+  <input id="robotStatus" placeholder="Status (OPERATIONAL/INACTIVE/FAULT)" /><br/>
+  <input id="robotInstallDate" type="date" placeholder="Installation Date" /><br/>
+  <button onclick="createRobot()">➕ Create Robot</button>
+
+    <hr />
+    <input id="getRobotId" placeholder="Robot ID" /><br />
+    <button onclick="getRobotById()">🔍 Get Robot by ID</button>
+
+    <hr />
+    <button onclick="getAllRobots()">📋 Get All Robots</button>
+
+    <hr />
+    <input id="updateRobotId" placeholder="Robot ID (24-char)" />
+    <input id="updateRobotName" placeholder="Name" />
+    <input id="updateRobotUUID" placeholder="MAC Address" />
+    <input id="updateRobotModel" placeholder="Model" />
+    <input id="updateRobotLocation" placeholder="Location ID" />
+    <input id="updateRobotCommPort" placeholder="Comm Port" />
+    <input id="updateRobotStatus" placeholder="Status" />
+
+    <button onclick="updateRobot()">✏️ Update Robot</button>
+
+    <hr />
+    <input id="deleteRobotId" placeholder="Robot ID" /><br />
+    <button onclick="deleteRobot()">🗑️ Delete Robot</button>
+
+
+    <h2>Logout</h2>
+    <button onclick="logout()">Logout</button>
+    <div class="countdown" id="tokenTimer"></div>
+
+    <hr />
+
+    <h3>Response:</h3>
+    <textarea id="responseBox" readonly></textarea>
+  </div>
+
+  <div id="toast">⚠️ Session expires in 1 minute</div>
+
+  <script>
+    const apiUrl = 'https://' + window.location.hostname + ':8443';
+    let countdownInterval = null;
+    let toastShown = false;
+
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.className = "show";
+      setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 4000);
+    }
+
+    function saveToken(token, exp, email) {
+      localStorage.setItem('robot_token', token);
+      localStorage.setItem('robot_token_exp', exp);
+      localStorage.setItem('robot_email', email || '');
+      toastShown = false;
+      startTokenCountdown();
+      showUserInfo();
+    }
+
+    function getToken() {
+      return localStorage.getItem('robot_token') || '';
+    }
+
+    function getUserEmail() {
+      return localStorage.getItem('robot_email') || '';
+    }
+
+    function clearToken() {
+      localStorage.clear();
+      document.getElementById('tokenTimer').innerText = '';
+      document.getElementById('userInfo').innerText = '';
+      clearInterval(countdownInterval);
+      alert("Session expired. You have been logged out.");
+    }
+
+    function startTokenCountdown() {
+      clearInterval(countdownInterval);
+      const exp = parseInt(localStorage.getItem('robot_token_exp'));
+      if (!exp) return;
+
+      countdownInterval = setInterval(() => {
+        const remaining = exp * 1000 - Date.now();
+        if (remaining <= 0) {
+          document.getElementById('tokenTimer').innerText = '🔒 Token expired.';
+          clearToken();
+          return;
+        }
+
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+        document.getElementById('tokenTimer').innerText = `⏳ Token expires in: ${minutes}m ${seconds}s`;
+
+        if (remaining <= 60000 && !toastShown) {
+          showToast("⚠️ Session expires in 1 minute");
+          toastShown = true;
+        }
+
+      }, 1000);
+    }
+
+    function showUserInfo() {
+      const email = getUserEmail();
+      if (email) {
+        document.getElementById('userInfo').innerText = `🔓 Logged in as: ${email}`;
+      }
+    }
+
+    async function signup() {
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPass').value;
+
+      const res = await fetch(`${apiUrl}/account/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPass').value;
+
+      const res = await fetch(`${apiUrl}/account/login/local`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+      if (data.token) {
+        const payload = JSON.parse(atob(data.token.split('.')[1]));
+        saveToken(data.token, payload.exp, data.email);
+      }
+      showResponse(data);
+    }
+
+    async function accessProtected() {
+      const token = getToken();
+      if (!token) return showResponse({ error: "Session expired or not logged in" });
+
+      const robotId = document.getElementById('robotId').value || '101';
+
+      const res = await fetch(`${apiUrl}/solar-robot/${robotId}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function getAccountDetails() {
+      const token = getToken();
+      const res = await fetch(`${apiUrl}/account`, {
+        method: 'GET',
+        headers: { 'x-api-key': token }
+      });
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function changePassword() {
+      const token = getToken();
+      const newPass = document.getElementById('newPassword').value;
+
+      const res = await fetch(`${apiUrl}/account/change-password`, {
+        method: 'PATCH',
+        headers: {
+          'x-api-key': token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 'new-password': newPass })
+      });
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function createClient() {
+      const token = getToken();
+      const name = document.getElementById('clientName').value;
+
+      if (!token) return showResponse({ error: "You must be logged in" });
+      if (!name.trim()) return showResponse({ error: "Client name is required" });
+
+      const res = await fetch(`${apiUrl}/client`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': token
+        },
+        body: JSON.stringify({ name })
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+    async function getAllClients() {
+      const token = getToken();
+      if (!token) return showResponse({ error: "You must be logged in" });
+
+      const res = await fetch(`${apiUrl}/allclient`, {
+        method: 'GET',
+        headers: {
+          'x-api-key': token
+        }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function getClientById() {
+      const token = getToken();
+      const clientId = document.getElementById('getClientId').value;
+
+      if (!token) return showResponse({ error: "You must be logged in" });
+      if (!clientId) return showResponse({ error: "Client ID is required" });
+
+      const res = await fetch(`${apiUrl}/client/${clientId}`, {
+        method: 'GET',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function updateClient() {
+      const token = getToken();
+      const clientId = document.getElementById('updateClientId').value;
+      const newName = document.getElementById('updateClientName').value;
+
+      if (!token) return showResponse({ error: "You must be logged in" });
+      if (!clientId || !newName) return showResponse({ error: "Client ID and new name required" });
+
+      const res = await fetch(`${apiUrl}/client/${clientId}`, {
+        method: 'PATCH',
+        headers: {
+          'x-api-key': token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: newName })
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function deleteClient() {
+      const token = getToken();
+      const clientId = document.getElementById('deleteClientId').value;
+
+      if (!token) return showResponse({ error: "You must be logged in" });
+      if (!clientId) return showResponse({ error: "Client ID is required" });
+
+      const res = await fetch(`${apiUrl}/client/${clientId}`, {
+        method: 'DELETE',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+    async function createLocation() {
+      const token = getToken();
+      const name = document.getElementById('locationName').value;
+      const client = document.getElementById('locationClient').value;
+      const address = {
+        'line-1': document.getElementById('addr1').value,
+        'line-2': document.getElementById('addr2').value,
+        'line-3': document.getElementById('addr3').value,
+        'city': document.getElementById('addrCity').value,
+        'state': document.getElementById('addrState').value,
+        'zip': document.getElementById('addrZip').value,
+        'country': document.getElementById('addrCountry').value
+      };
+
+      const res = await fetch(`${apiUrl}/location`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': token
+        },
+        body: JSON.stringify({ name, client, address })
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function getAllLocations() {
+      const token = getToken();
+      const res = await fetch(`${apiUrl}/alllocation`, {
+        method: 'GET',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function getLocationById() {
+      const token = getToken();
+      const id = document.getElementById('locId').value;
+      const res = await fetch(`${apiUrl}/location/${id}`, {
+        method: 'GET',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function updateLocation() {
+      const token = getToken();
+      const id = document.getElementById('locIdUpdate').value;
+
+      const body = {
+        name: document.getElementById('locNameUpdate').value,
+        client_id: document.getElementById('locClientIdUpdate').value,
+        address_line1: document.getElementById('line1Update').value,
+        address_line2: document.getElementById('line2Update').value,
+        address_line3: document.getElementById('line3Update').value,
+        city: document.getElementById('cityUpdate').value,
+        state: document.getElementById('stateUpdate').value,
+        zip: document.getElementById('zipUpdate').value,
+        country: document.getElementById('countryUpdate').value
+      };
+
+      try {
+        const res = await fetch(`${apiUrl}/location/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': token
+          },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+        showResponse(data);
+      } catch (err) {
+        document.getElementById('responseBox').textContent = 'Request failed: ' + err.message;
+      }
+    }
+
+    async function deleteLocation() {
+      const token = getToken();
+      const id = document.getElementById('locIdDelete').value;
+
+      const res = await fetch(`${apiUrl}/location/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function sendRobotCommand() {
+      const token = getToken();
+      if (!token) return showResponse({ error: "You must be logged in" });
+
+      const robotId = document.getElementById("commandRobotId").value;
+      const commandName = document.getElementById("commandName").value;
+      const direction = document.getElementById("cmdDirection").value;
+      const mainSpeed = parseInt(document.getElementById("cmdMainSpeed").value) || 0;
+      const brushSpeed = parseInt(document.getElementById("cmdBrushSpeed").value) || 0;
+      const timestamp = new Date().toISOString();
+
+      const params = {
+        direction,
+        mainSpeed,
+        brushSpeed
+      };
+
+      const payload = {
+        timestamp,
+        command: commandName,
+        params
+      };
+
+      try {
+        const res = await fetch(`${apiUrl}/solar-robot/command/${robotId}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': token
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        showResponse(data);
+      } catch (err) {
+        showResponse({ error: err.message });
+      }
+    }
+
+ async function createRobot() {
+    const token = getToken();
+    if (!token) return showResponse({ error: "You must be logged in" });
+
+    const payload = {
+      name: document.getElementById("robotName").value,
+      "mac-address": document.getElementById("robotMac").value,
+      model: document.getElementById("robotModel").value,
+      location: document.getElementById("robotLocation").value,
+      "comm-port": document.getElementById("robotCommPort").value,
+      status: document.getElementById("robotStatus").value,
+      "installation-date": document.getElementById("robotInstallDate").value
+    };
+
+    try {
+      const res = await fetch(`${apiUrl}/solar-robot`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': token
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    } catch (err) {
+      showResponse({ error: err.message });
+    }
+  }
+
+    async function getRobotById() {
+      const token = getToken();
+      const id = document.getElementById("getRobotId").value;
+
+      const res = await fetch(`${apiUrl}/robot/${id}`, {
+        method: 'GET',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function getAllRobots() {
+      const token = getToken();
+
+      const res = await fetch(`${apiUrl}/allrobot`, {
+        method: 'GET',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+
+    async function updateRobot() {
+      const token = getToken();
+      const id = document.getElementById("updateRobotId").value;
+      const name = document.getElementById("updateRobotName").value;
+      const mac = document.getElementById("updateRobotUUID").value;
+      const model = document.getElementById("updateRobotModel").value;
+      const location = document.getElementById("updateRobotLocation").value;
+      const commPort = document.getElementById("updateRobotCommPort").value;
+      const status = document.getElementById("updateRobotStatus").value;
+
+      if (id === "") {
+        alert("Please enter robot ID!");
+        return false;
+      }
+
+      const payload = {
+        name,
+        "macaddress": mac,
+        model,
+        location,
+        "comm_port": commPort,
+        status
+      };
+
+      try {
+        const res = await fetch(`${apiUrl}/solar-robot/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': token
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        showResponse(data);
+      } catch (error) {
+        console.error("Update failed:", error);
+        alert("Failed to update robot.");
+      }
+    }
+    async function deleteRobot() {
+      const token = getToken();
+      const id = document.getElementById("deleteRobotId").value;
+
+      const res = await fetch(`${apiUrl}/solar-robot/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      showResponse(data);
+    }
+    async function logout() {
+      const token = getToken();
+      if (!token) return showResponse({ error: "You are not logged in" });
+
+      const res = await fetch(`${apiUrl}/account/logout`, {
+        method: 'POST',
+        headers: { 'x-api-key': token }
+      });
+
+      const data = await res.json();
+      clearToken();
+      showResponse(data);
+    }
+
+    function showResponse(data) {
+      document.getElementById('responseBox').value = JSON.stringify(data, null, 2);
+    }
+
+    function checkStrength(password) {
+      const meter = document.getElementById('strengthMeter');
+      let score = 0;
+      if (password.length > 6) score++;
+      if (password.length > 10) score++;
+      if (/[A-Z]/.test(password)) score++;
+      if (/[a-z]/.test(password)) score++;
+      if (/[0-9]/.test(password)) score++;
+      if (/[^A-Za-z0-9]/.test(password)) score++;
+
+      const width = Math.min(score * 20, 100);
+      meter.style.width = width + "%";
+      meter.style.background = score >= 4 ? "green" : score >= 2 ? "orange" : "red";
+    }
+
+    // Auto-resume countdown if token exists
+    window.onload = () => {
+      if (getToken()) {
+        startTokenCountdown();
+        showUserInfo();
+      }
+    };
+  </script>
+</body>
+
+</html>

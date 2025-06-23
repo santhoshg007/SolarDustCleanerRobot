@@ -1,11 +1,15 @@
 const mqtt = require('mqtt');
-const deviceUUID = '1001';
+const mysql = require('mysql2');
+const deviceUUID = '54769dfca8d4417bb9ab6f78';
+
+//const client = mqtt.connect('mqtt://localhost:1883');
 
 // MQTT Client
 const client = mqtt.connect('mqtt://localhost:1883', {
   username: 'konguess',
   password: 'konguess#$007'
 });
+
 
 client.on('connect', () => {
   client.subscribe(`robot/${deviceUUID}`, () => {
@@ -15,7 +19,7 @@ client.on('connect', () => {
 
 client.on('message', (topic, message) => {
   const data = JSON.parse(message.toString());
-  console.log('📥 Received:', data);
+  console.log('📥 Received response data:', data);
 
   // Simulate processing success
   const ack = {
