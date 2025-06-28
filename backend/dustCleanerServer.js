@@ -16,14 +16,10 @@ const newId = randomUUID();
 const SECRET_KEY = 'c90069dbacfedb7a94644184d53550c8dafcdd1785a139ea69c29f00c4680659162ac630cc4b55a06b7a2f802972b4aa801e16f05a77de9d49c6c98299a010f8'; // Use .env in production
 
 // MQTT Client
-//const mqttClient = mqtt.connect('mqtt://localhost:1883');
-
-// MQTT Client
 const mqttClient = mqtt.connect('mqtt://localhost:1883', {
   username: 'konguess',
   password: 'konguess#$007'
 });
-
 
 mqttClient.on('connect', () => {
   console.log('✅ Connected to MQTT broker');
@@ -43,7 +39,6 @@ app.use(bodyParser.json());
 
 // MySQL setup
 const DB_NAME = 'robot_om_db';
-
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
@@ -96,19 +91,19 @@ db.connect(err => {
     name VARCHAR(100) NOT NULL,
     macaddress VARCHAR(32) UNIQUE NOT NULL,
     model VARCHAR(50) NOT NULL,
-    location VARCHAR(24) NOT NULL,
+    location INT NOT NULL,
     comm_port VARCHAR(50),
     status ENUM('OPERATIONAL', 'INACTIVE', 'FAULT') DEFAULT 'OPERATIONAL',
     installation_date DATETIME,
-    created_by VARCHAR(24) NOT NULL,
+    created_by INT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_by VARCHAR(24),
+    updated_by INT,
     updated DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     last_command JSON,
     btn TINYINT(1) DEFAULT 0,
     FOREIGN KEY (location) REFERENCES rtbl_locations(id) ON DELETE CASCADE,
-    FOREIGN KEY (created_by) REFERENCES rtbl_accounts(id) ON DELETE SET NULL,
-    FOREIGN KEY (updated_by) REFERENCES rtbl_accounts(id) ON DELETE SET NULL
+    FOREIGN KEY (created_by) REFERENCES rtbl_accounts_dts(id) ON DELETE SET NULL,
+    FOREIGN KEY (updated_by) REFERENCES rtbl_accounts_dts(id) ON DELETE SET NULL
   );
   CREATE TABLE IF NOT EXISTS rtbl_commands (
     id VARCHAR(24) PRIMARY KEY,
@@ -117,10 +112,10 @@ db.connect(err => {
     payload JSON NOT NULL,
     status ENUM('pending', 'success', 'failure') DEFAULT 'pending',
     acknowledged_at DATETIME DEFAULT NULL,
-    created_by VARCHAR(24) NOT NULL,
+    created_by INT,
     created DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (robot_id) REFERENCES rtbl_robots(id) ON DELETE CASCADE,
-    FOREIGN KEY (created_by) REFERENCES rtbl_accounts(id) ON DELETE SET NULL
+    FOREIGN KEY (created_by) REFERENCES rtbl_accounts_dts(id) ON DELETE SET NULL
   );`,
 
     err => {
