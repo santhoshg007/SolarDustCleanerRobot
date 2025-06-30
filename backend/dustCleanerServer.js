@@ -100,7 +100,7 @@ db.connect(err => {
            FOREIGN KEY (created_by) REFERENCES rtbl_accounts_dts(id)
          );
          CREATE TABLE IF NOT EXISTS rtbl_locations (
-           id INT AUTO_INCREMENT PRIMARY KEY,
+           id VARCHAR(50) PRIMARY KEY,
            name VARCHAR(191) NOT NULL,
            client_id INT NOT NULL,
            address_line1 VARCHAR(255),
@@ -119,7 +119,7 @@ db.connect(err => {
            name VARCHAR(100) NOT NULL,
            macaddress VARCHAR(32) UNIQUE NOT NULL,
            model VARCHAR(50) NOT NULL,
-           location INT NOT NULL,
+           location VARCHAR(50) NOT NULL,
            comm_port VARCHAR(50),
            status ENUM('OPERATIONAL', 'INACTIVE', 'FAULT') DEFAULT 'OPERATIONAL',
            installation_date DATETIME,
@@ -152,7 +152,6 @@ db.connect(err => {
         }
     );
 });
-
 // --- Authentication Routes ---
 
 // Signup
